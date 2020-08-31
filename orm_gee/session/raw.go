@@ -2,6 +2,7 @@ package session
 
 import (
 	"database/sql"
+	"go-experiment/orm_gee/clause"
 	"go-experiment/orm_gee/dialect"
 	"go-experiment/orm_gee/log"
 	"go-experiment/orm_gee/schema"
@@ -14,6 +15,7 @@ type Session struct {
 	sqlVars  []interface{}
 	dialect  dialect.Dialect
 	refTable *schema.Schema
+	clause   clause.Clause
 }
 
 func New(db *sql.DB, dialect dialect.Dialect) *Session {
@@ -26,6 +28,7 @@ func New(db *sql.DB, dialect dialect.Dialect) *Session {
 func (s *Session) Clear() {
 	s.sql.Reset()
 	s.sqlVars = nil
+	s.clause = clause.Clause{}
 }
 
 func (s *Session) DB() *sql.DB {
