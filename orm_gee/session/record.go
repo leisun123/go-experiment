@@ -25,6 +25,7 @@ func (s *Session) Insert(values ...interface{}) (int64, error) {
 }
 
 func (s *Session) Find(values interface{}) error {
+	s.CallMethod(BeforeQuery, nil)
 	destSlice := reflect.Indirect(reflect.ValueOf(values))
 	destType := destSlice.Type().Elem()
 	table := s.Model(reflect.New(destType).Elem().Interface()).RefTable()
@@ -39,6 +40,7 @@ func (s *Session) Find(values interface{}) error {
 	for rows.Next() {
 		dest := reflect.New(destType).Elem()
 		var values []interface{}
+		s.CallMethod(AfterQuery, dest.Addr().Interface())
 		for _, name := range table.FieldNames {
 			values = append(values, dest.FieldByName(name).Addr().Interface())
 		}
